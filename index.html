@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Finders | Custom Orders</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #121212; 
+            color: #ffffff; 
+            padding: 15px; 
+            display: flex; 
+            justify-content: center; 
+            margin: 0;
+        }
+        .container { 
+            background: #1e1e1e; 
+            padding: 20px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8); 
+            max-width: 400px; 
+            width: 100%; 
+            border: 1px solid #333;
+            text-align: center;
+        }
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 5px;
+        }
+        h2 { color: #ffffff; margin-top: 5px; margin-bottom: 20px; font-size: 20px; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #bbbbbb; font-size: 14px; }
+        
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #444; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 16px;
+            background-color: #2a2a2a; 
+            color: #ffffff; 
+        }
+
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 50%, #f953c6 100%);
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        .error-message { color: #ff6b6b; font-size: 13px; margin-bottom: 15px; display: none; font-weight: bold; }
+        hr { border: 0; border-top: 1px solid #333; margin: 20px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo-container">
+        <img src="logo.png" alt="Card Finders Logo">
+    </div>
+
+    <h2>Order Your Custom Card</h2>
+    
+    <div id="error" class="error-message">Please provide an Email or Phone Number!</div>
+
+    <form id="orderForm" action="https://formspree.io/f/xbdarwbz" method="POST">
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="email" name="email" placeholder="example@mail.com">
+        </div>
+        <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="000-000-0000">
+        </div>
+        <hr>
+        <div class="form-group">
+            <label>Card Style</label>
+            <select name="style">
+                <option value="Anime">Anime</option>
+                <option value="Neon">Neon / Cyberpunk</option>
+                <option value="Geometric">Geometric</option>
+                <option value="Floral">Floral</option>
+                <option value="Solid Color">Solid Color</option>
+                <option value="Minimalist">Minimalist</option>
+                <option value="Modern">Modern</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Primary Color</label>
+            <input type="text" name="primary_color" placeholder="e.g. Neon Cyan" required>
+        </div>
+
+        <div class="form-group">
+            <label>Secondary Color (Optional)</label>
+            <input type="text" name="secondary_color" placeholder="e.g. Electric Pink">
+        </div>
+
+        <div class="form-group">
+            <label>Design Details</label>
+            <textarea name="details" rows="3" placeholder="Describe your vision..."></textarea>
+        </div>
+        <button type="submit">Submit Request</button>
+    </form>
+</div>
+
+<script>
+    const form = document.getElementById('orderForm');
+    form.addEventListener('submit', function(e) {
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        if (email === "" && phone === "") {
+            e.preventDefault(); 
+            document.getElementById('error').style.display = "block"; 
+            window.scrollTo(0, 0);
+        }
+    });
+</script>
+
+</body>
+</html>
