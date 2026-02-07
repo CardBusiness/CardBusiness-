@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Card Finders | Custom Orders</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Card Finders">
+    <link rel="apple-touch-icon" href="logo.png">
+
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -28,7 +34,7 @@
             width: 100%;
             height: auto;
             border-radius: 10px;
-            margin-bottom: 5px;
+            margin-bottom: 15px;
         }
         h2 { color: #ffffff; margin-top: 5px; margin-bottom: 20px; font-size: 20px; }
         .form-group { margin-bottom: 15px; text-align: left; }
@@ -59,6 +65,13 @@
             text-transform: uppercase;
         }
 
+        #success-message {
+            display: none;
+            padding: 40px 20px;
+        }
+        #success-message h3 { color: #00d2ff; margin-bottom: 10px; }
+        #success-message p { color: #bbbbbb; line-height: 1.6; }
+
         .error-message { color: #ff6b6b; font-size: 13px; margin-bottom: 15px; display: none; font-weight: bold; }
         hr { border: 0; border-top: 1px solid #333; margin: 20px 0; }
     </style>
@@ -70,61 +83,92 @@
         <img src="logo.png" alt="Card Finders Logo">
     </div>
 
-    <h2>Order Your Custom Card</h2>
-    
-    <div id="error" class="error-message">Please provide an Email or Phone Number!</div>
+    <div id="form-container">
+        <h2>Order Your Custom Card</h2>
+        <div id="error" class="error-message">Please provide an Email or Phone Number!</div>
 
-    <form id="orderForm" action="https://formspree.io/f/xbdarwbz" method="POST">
-        <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" id="email" name="email" placeholder="example@mail.com">
-        </div>
-        <div class="form-group">
-            <label>Phone Number</label>
-            <input type="tel" id="phone" name="phone" placeholder="000-000-0000">
-        </div>
-        <hr>
-        <div class="form-group">
-            <label>Card Style</label>
-            <select name="style">
-                <option value="Anime">Anime</option>
-                <option value="Neon">Neon / Cyberpunk</option>
-                <option value="Geometric">Geometric</option>
-                <option value="Floral">Floral</option>
-                <option value="Solid Color">Solid Color</option>
-                <option value="Minimalist">Minimalist</option>
-                <option value="Modern">Modern</option>
-            </select>
-        </div>
-        
-        <div class="form-group">
-            <label>Primary Color</label>
-            <input type="text" name="primary_color" placeholder="e.g. Neon Cyan" required>
-        </div>
+        <form id="orderForm" action="https://formspree.io/f/xbdarwbz" method="POST">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" name="email" placeholder="example@mail.com">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="000-000-0000">
+            </div>
+            <hr>
+            <div class="form-group">
+                <label>Card Material</label>
+                <select name="material">
+                    <option value="Standard">Standard Cardstock</option>
+                    <option value="Plastic">Premium Plastic</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Design Style</label>
+                <select name="style">
+                    <option value="Solid Color">Solid Color</option>
+                    <option value="Anime">Anime</option>
+                    <option value="Neon">Neon / Cyberpunk</option>
+                    <option value="Geometric">Geometric</option>
+                    <option value="Floral">Floral</option>
+                    <option value="Minimalist">Minimalist</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Primary Color</label>
+                <input type="text" name="primary_color" placeholder="e.g. Matte Red" required>
+            </div>
+            <div class="form-group">
+                <label>Secondary Color (Optional)</label>
+                <input type="text" name="secondary_color" placeholder="e.g. Gold Trim">
+            </div>
+            <div class="form-group">
+                <label>Design Details</label>
+                <textarea name="details" rows="3" placeholder="Describe your vision..."></textarea>
+            </div>
+            <button type="submit" id="submit-btn">Submit Request</button>
+        </form>
+    </div>
 
-        <div class="form-group">
-            <label>Secondary Color (Optional)</label>
-            <input type="text" name="secondary_color" placeholder="e.g. Electric Pink">
-        </div>
-
-        <div class="form-group">
-            <label>Design Details</label>
-            <textarea name="details" rows="3" placeholder="Describe your vision..."></textarea>
-        </div>
-        <button type="submit">Submit Request</button>
-    </form>
+    <div id="success-message">
+        <h3>🎉 Order Sent!</h3>
+        <p>Thanks for choosing <strong>Card Finders</strong>. We'll reach out to finalize your design shortly.</p>
+        <button onclick="location.reload()" style="background: #333; font-size: 14px; padding: 10px;">New Request</button>
+    </div>
 </div>
 
 <script>
     const form = document.getElementById('orderForm');
+    const formContainer = document.getElementById('form-container');
+    const successMessage = document.getElementById('success-message');
+
     form.addEventListener('submit', function(e) {
         const email = document.getElementById('email').value.trim();
         const phone = document.getElementById('phone').value.trim();
+        
         if (email === "" && phone === "") {
             e.preventDefault(); 
             document.getElementById('error').style.display = "block"; 
             window.scrollTo(0, 0);
+            return;
         }
+
+        e.preventDefault();
+        const data = new FormData(form);
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: data,
+            headers: { 'Accept': 'application/json' }
+        }).then(response => {
+            if (response.ok) {
+                formContainer.style.display = 'none';
+                successMessage.style.display = 'block';
+            } else {
+                alert("Oops! There was a problem.");
+            }
+        });
     });
 </script>
 
